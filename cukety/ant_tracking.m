@@ -5,12 +5,12 @@ function [tracks] = ant_tracking(pth_ants)
 imgs = imageDatastore(pth_ants);
 imgs = readall(imgs);
 
-% video = VideoWriter('ants.avi');
-% open(video);
-% for i=1:length(imgs)
-%   writeVideo(video,imgs{i,1});
-% end
-% close(video); %close the file
+video = VideoWriter('ants.avi');
+open(video);
+for i=1:length(imgs)
+  writeVideo(video,imgs{i,1});
+end
+close(video); %close the file
 
 %% Object detection initialization
 

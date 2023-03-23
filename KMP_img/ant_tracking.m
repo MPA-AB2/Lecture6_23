@@ -31,7 +31,7 @@ pointTracker = vision.PointTracker;
 
 initialize(pointTracker,centroids,obr)
 
-for i = 2:215
+for i = 2:size(names,1)
     frameRGB = imread([path,'\',names(i).name]);%'\Ants\'
     frameGray = im2gray(frameRGB);
     [points,~] = pointTracker(frameGray);

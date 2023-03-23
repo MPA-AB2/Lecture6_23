@@ -1,8 +1,9 @@
 function [trajectory] = ant_tracking(path)
 
-names = dir([path,'Ants\*.jpg']);
+names = dir([path,'\*.jpg']);
 %%
-obr = imread([path,'Ants\00000001.jpg']);
+
+obr = imread([path,'\',names(1).name]);
 obr = rgb2gray(obr);
 
 obrn = obr;
@@ -31,7 +32,7 @@ pointTracker = vision.PointTracker;
 initialize(pointTracker,centroids,obr)
 
 for i = 2:215
-    frameRGB = imread([path,'\Ants\',names(i).name]);%'\Ants\'
+    frameRGB = imread([path,'\',names(i).name]);%'\Ants\'
     frameGray = im2gray(frameRGB);
     [points,~] = pointTracker(frameGray);
 

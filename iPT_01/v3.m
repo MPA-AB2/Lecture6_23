@@ -32,7 +32,7 @@ options = trainingOptions('sgdm',...
 detector
 save detector
 %%
-%load('detector.mat')
+%load('detector.neco')
 addpath(genpath('Ants'))
 num=1024/128;
 trajectories=cell(1,6);
@@ -91,7 +91,7 @@ for imnum=1:215
        
 
 end
-for imnum=2:215
+for imnum=2:215  %seradi
     xvectpresmravence=[];
     yvectpresmravence=[];
 
@@ -116,9 +116,17 @@ for imnum=2:215
         
     end
            
+    for x=1:size(distvect,2)
+        value=max(max(distvect));
+        [Idistvect,Jdistvect]=find(distvect==value,1);
 
-
-        trajectories2=
+         trajectories{1,Jdistvect}(imnum,1)=xvectpresmravence(Jdistvect);
+        trajectories{1,Jdistvect}(imnum,2)=yvectpresmravence(Jdistvect);
+    
+        distvect(1,Jdistvect)=0;
+        
+    end
+        
 
 
 end

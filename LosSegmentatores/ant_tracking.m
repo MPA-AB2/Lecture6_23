@@ -1,7 +1,7 @@
 function [trajectories] = ant_tracking(path)
 %% find names of files
-filesInfo = dir(path);
-files = {filesInfo(3:(end)).name};
+filesInfo = dir(fullfile(path,"\*.jpg"));
+files = {filesInfo.name};
 
 trajectories = cell(1,6);
 %% loading first image and detecting ants   
@@ -16,7 +16,7 @@ info = regionprops(threshIm);
 for idx = 1:6
     
     % create point tracker and coord matrix
-    pointTracker = vision.PointTracker('NumPyramidLevels',6,'BlockSize',[39,39]);%('NumPyramidLevels',2,'BlockSize',[27,27])
+    pointTracker = vision.PointTracker('BlockSize',[39,39]);%('NumPyramidLevels',2,'BlockSize',[27,27])
     trajectories{idx} = zeros(length(files),2);
 
    % detect feature points

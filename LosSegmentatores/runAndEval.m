@@ -10,6 +10,7 @@ figure
 imshow(imread("V:\MPA-AB2\Lecture6_23\Ants\00000001.jpg"))
 hold on
 for i = 1:6
+    scatter(trajectories{i}(1,1),trajectories{i}(1,2),"green","filled")
     plot(trajectories{i}(:,1),trajectories{i}(:,2))
 end
 hold off

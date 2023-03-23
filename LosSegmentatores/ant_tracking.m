@@ -1,7 +1,7 @@
 function [trajectories] = ant_tracking(path)
 %% find names of files
 filesInfo = dir(path);
-files = {filesInfo(3:(end-1)).name};
+files = {filesInfo(3:(end)).name};
 
 trajectories = cell(1,6);
 %% loading first image and detecting ants   

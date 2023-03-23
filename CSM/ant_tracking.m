@@ -11,7 +11,7 @@ end
 
 trajectories = cell(1,6);
 
-ImBW = imbinarize(Im{1},'adaptive','ForegroundPolarity','dark','Sensitivity',0.2);
+ImBW = imbinarize(Im{1},0.2);
 ImBW = ~ImBW;
 ImBW = bwareafilt(ImBW,6);
 
@@ -25,7 +25,9 @@ end
 for i = 2:length(file_names)
 
     Im = im2double(rgb2gray(imread([folder,'\',file_names{i,1}])));
-    ImBW = imbinarize(Im,'adaptive','ForegroundPolarity','dark','Sensitivity',0.2);
+    Im = medfilt2(Im,[2 2]);
+
+    ImBW = imbinarize(Im,0.2);
     ImBW = ~ImBW;
     ImBW = bwareafilt(ImBW,6);
     
@@ -38,17 +40,17 @@ for i = 2:length(file_names)
     if size(centroids,1)<6
         BW = ~BW;
         Distance = -bwdist(BW);
-        Distance = imhmin(Distance,6);
+        Distance = imhmin(Distance, 3);
         Distance(BW) = -Inf;
 
         Ld = watershed(Distance);
         BW2 = BW;
         BW2(Ld == 0) = 0;
 
-        se1 = strel('sphere',5);
+        se1 = strel('sphere', 5);
         BW2 = imerode(BW2, se1);
 
-        se2 = strel('rectangle',10 , 60);
+        se2 = strel('line', 6, 95);
         BW2 = imerode(BW2, se2);
 
         BW3 = bwareafilt(BW2,6);

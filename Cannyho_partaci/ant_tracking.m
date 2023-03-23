@@ -1,4 +1,4 @@
-function [trajectories] = ant_tracking2(path)
+function [trajectories] = ant_tracking(path)
     imagefiles =  dir([path,'/*.jpg']);
     cd(path)
     
@@ -12,12 +12,11 @@ function [trajectories] = ant_tracking2(path)
     level = 35;
     bw(frame1>level) = 0;
     bw(frame1<level) = 1;
-    se = strel("diamond",3);
     bw = imopen(bw, strel('diamond', 3));
-    bw = imclose(bw, strel('diamond', 2));
+    bw = imclose(bw, strel('sphere', 2));
     bw = imfill(bw, 'holes');
 
-    [L,number] = bwlabel(bw,8);
+    [L,~] = bwlabel(bw,8);
     for m = 1:6
         [y, x] = find(L == m);
         point = [round(median(x)) round(median(y))];
@@ -29,8 +28,7 @@ function [trajectories] = ant_tracking2(path)
     initialize(pointTracker,Points,frame1)
 
     for i = 2:length(imagefiles)
-        frame = imread(imagefiles(i).name);
-        frame = im2gray(frame);
+        frame = im2gray(imread(imagefiles(i).name));
         [points,~] = pointTracker(frame);
         for j = 1:6
             cesta{j}(i,:) = round(points(j,:));

@@ -45,7 +45,7 @@ for i = 1:length(files)
     if i == 1
         ant_paths = centroids;
     else
-        ant_paths = sort_ants_to_paths(ant_paths, centroids);
+        ant_paths = sort_ants_to_paths2(ant_paths, centroids, 140);
     end
         
 

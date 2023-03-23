@@ -9,22 +9,22 @@ images = cell(numFiles,1);
 trajectories = cell(1,6);
 paths = zeros(numFiles,2,6);
 
-
-% figure(1);
 for i = 1:numFiles
     images{i} = imread([path, files(i).name]);
     
     % Binary mask
     im = im2double(rgb2gray(images{i}));
-    im = medfilt2(im, [7,7], 'symmetric');
+%     im = medfilt2(im, [5,5], 'symmetric');
+%     im = imgaussfilt(im);
     
-    mask = imbinarize(im, 0.2);
+    mask = imbinarize(im, 0.12);
     mask = ~mask;
     
     % Apply morphological operations to remove noise and fill in holes.
-    mask = imopen(mask, strel('rectangle', [3,3]));
-    mask = imclose(mask, strel('rectangle', [3,3]));
+%     mask = imopen(mask, strel('disk', 4));
+%     mask = imclose(mask, strel('disk', 4));
     mask = imfill(mask, 'holes');
+    mask = bwareaopen(mask, 24);
     
     comp = bwconncomp(mask);
     
@@ -49,12 +49,16 @@ for i = 1:numFiles
         mask(comp.PixelIdxList{lenIdx}) = 0;
         
         % Split the object
-        maskJoint = imerode(maskJoint, strel('rectangle', [3, 3]));
+        maskJoint = imerode(maskJoint, strel('disk', 3));
         compJoint = bwconncomp(maskJoint);
         
-        while compJoint.NumObjects == 1
-            maskJoint = imerode(maskJoint, strel('rectangle', [3, 3]));
+        while (comp.NumObjects + compJoint.NumObjects) < 6
+            maskJoint = imerode(maskJoint, strel('disk', 3));
             compJoint = bwconncomp(maskJoint);
+            
+            if compJoint.NumObjects == 0
+                compJoint.NumObjects = Inf;
+            end
         end
         
         % Join the mask
@@ -62,6 +66,28 @@ for i = 1:numFiles
         comp = bwconncomp(mask);
     end
 
+    % If we have more than 6 objects    
+    comp.CenterIdx = struct2cell(regionprops(comp,'Centroid'));
+    
+    if comp.NumObjects > 6
+        distMat = pdist(cell2mat(comp.CenterIdx'), 'euclidean');
+        upgma = linkage(distMat,'average');
+        joinedComps = cluster(upgma,'MaxClust',6,'Criterion','distance');
+
+        for k = 1:max(joinedComps)
+            group = joinedComps == k;
+            if sum(group) > 1
+                comp.PixelIdxListJoined{k} = vertcat(comp.PixelIdxList{group});
+            else
+                comp.PixelIdxListJoined{k} = comp.PixelIdxList{group};
+            end
+        end
+        
+        comp.PixelIdxList = comp.PixelIdxListJoined;
+        comp.NumObjects = 6;
+    end
+    
+    % Calculate centroids
     centroids = regionprops(comp,'Centroid');
 
     % Assign first position
@@ -101,13 +127,12 @@ for i = 1:numFiles
         paths(i,:,indPrev) = centroids(indNext).Centroid;
         
     end
+
 end
 
 % Save trajectories
 for j = 1:6
     trajectories(1,j) = {paths(:,:,j)};
-end
-
 end
 
 

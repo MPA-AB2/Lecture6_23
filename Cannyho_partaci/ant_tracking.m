@@ -1,12 +1,12 @@
 function [trajectories] = ant_tracking(path)
     imagefiles =  dir([path,'/*.jpg']);
-    cd(path)
+%     cd(path)
     
     bw = zeros(1024,1024);
     Points = [];
     cesta= cell(1,6);
 
-    file1 = imagefiles(1).name;
+    file1 = [imagefiles(1).folder '/' imagefiles(1).name];
     frame1= imread(file1);
     frame1 = im2gray(frame1);     
     level = 35;
@@ -28,7 +28,7 @@ function [trajectories] = ant_tracking(path)
     initialize(pointTracker,Points,frame1)
 
     for i = 2:length(imagefiles)
-        frame = im2gray(imread(imagefiles(i).name));
+        frame = im2gray(imread([imagefiles(i).folder '/' imagefiles(i).name]));
         [points,~] = pointTracker(frame);
         for j = 1:6
             cesta{j}(i,:) = round(points(j,:));

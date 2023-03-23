@@ -71,7 +71,7 @@ for i = 1:numFiles
     
     if comp.NumObjects > 6
         distMat = pdist(cell2mat(comp.CenterIdx'), 'euclidean');
-        upgma = linkage(distMat,'average');
+        upgma = linkage(distMat,'ward');
         joinedComps = cluster(upgma,'MaxClust',6,'Criterion','distance');
 
         for k = 1:max(joinedComps)

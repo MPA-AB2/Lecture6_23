@@ -1,4 +1,4 @@
-function [trajectories] = Cannyho_partaci(path)
+function [trajectories] = ant_tracking(path)
     imagefiles =  dir([path,'/*.jpg']);
     cd(path)
     

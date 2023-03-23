@@ -24,7 +24,7 @@ for i = 1:numFiles
 %     mask = imopen(mask, strel('disk', 4));
 %     mask = imclose(mask, strel('disk', 4));
     mask = imfill(mask, 'holes');
-    mask = bwareaopen(mask, 24);
+    mask = bwareaopen(mask, 20);
     
     comp = bwconncomp(mask);
     
@@ -132,6 +132,8 @@ end
 
 % Save trajectories
 for j = 1:6
+    paths(:,1,j) = medfilt1(paths(:,1,j), 7);
+    paths(:,2,j) = medfilt1(paths(:,2,j), 7);
     trajectories(1,j) = {paths(:,:,j)};
 end
 

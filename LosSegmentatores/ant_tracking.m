@@ -15,7 +15,8 @@ info = regionprops(threshIm);
 %% for each ant motion tracking
 for idx = 1:6
     
-    pointTracker = vision.PointTracker('BlockSize',[39,39]);%('NumPyramidLevels',2,'BlockSize',[27,27])
+    % create point tracker and coord matrix
+    pointTracker = vision.PointTracker('NumPyramidLevels',6,'BlockSize',[39,39]);%('NumPyramidLevels',2,'BlockSize',[27,27])
     trajectories{idx} = zeros(length(files),2);
 
    % detect feature points

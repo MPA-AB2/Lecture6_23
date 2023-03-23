@@ -7,9 +7,9 @@ obr = imread([path,'\',names(1).name]);
 obr = rgb2gray(obr);
 
 obrn = obr;
-    
-obrn(obr > 25.5) = 0;
-obrn(obr < 25.5) = 1;
+% mean(mean(obr))/10
+obrn(obr >= 30) = 0;
+obrn(obr < 30) = 1;
 
     
 se = strel('disk',3);
